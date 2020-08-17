@@ -86,7 +86,7 @@ public class GoogleAPI {
 		      .setPageToken(pageToken)
 		      .execute();
 		  for (File file : result.getFiles()) {
-		    System.out.println("Répertoire " + name + " trouvé.\n");
+		    System.out.println("RÃ©pertoire " + name + " trouvÃ©.\n");
 		    return file.getId();
 		  }
 		  pageToken = result.getNextPageToken();

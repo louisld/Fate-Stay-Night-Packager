@@ -3,8 +3,6 @@ package fr.bloomenetwork.fatestaynight.packager;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 
 import javax.swing.JButton;
@@ -38,9 +36,8 @@ public class Main extends JFrame {
     	textOutput = new JTextArea();
     	textOutput.setRows(15);
     	textOutput.setEditable(false);
-    	PrintStream printStream = new PrintStream(new TextAreaOutputStream(textOutput), true, StandardCharsets.UTF_8);
-    	System.setOut(printStream);
-    	System.setErr(printStream);
+    	System.setOut(new PrintStreamCapturer(textOutput, System.out));
+    	System.setErr(new PrintStreamCapturer(textOutput, System.err, "[ERROR]"));
     	JPanel topPane = new JPanel();
     	progressBar = new JProgressBar();
     	progressBar.setMinimum(0);
