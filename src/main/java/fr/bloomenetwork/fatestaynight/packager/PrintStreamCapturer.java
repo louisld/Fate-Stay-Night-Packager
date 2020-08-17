@@ -4,6 +4,9 @@ import java.io.PrintStream;
 
 import javax.swing.JTextArea;
 
+//Permet de rediriger la sortie de la console vers le JTextArea
+//Trouvé sur StackOverflow car ma version avait
+//des problèmes avec les caractères Unicode
 public class PrintStreamCapturer extends PrintStream {
 
     private JTextArea text;

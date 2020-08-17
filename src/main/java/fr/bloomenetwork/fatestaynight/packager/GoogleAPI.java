@@ -41,6 +41,7 @@ public class GoogleAPI {
     	initGoogleService();
     }
 	
+    //Fonction donnée par la documentation de l'API
 	private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
         InputStream in = Main.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
@@ -59,6 +60,7 @@ public class GoogleAPI {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
     
+	//Initialisation du service
     private void initGoogleService() throws GeneralSecurityException, IOException {
     	// Build a new authorized API client service.
     	final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -67,6 +69,8 @@ public class GoogleAPI {
                 .build();
     }
     
+    //Donne la liste des sous-dossiers du dossier passé en paramètres
+    //L'option filter peut être utilisé pour passer d'autres paramètres
     public List<File> getSubFiles(String id, String filter) throws IOException {
     	FileList list = service.files().list()
     			.setFields("nextPageToken, files(id, name)")
@@ -75,6 +79,8 @@ public class GoogleAPI {
     	return list.getFiles();
     }
     
+    //Permet d'obtenir l'id d'un dossier à partir de son nom
+    //Le nom doit être unique, sinon on peut avoir un autre dossier
     public String getFolderIdByName(String name) throws Exception {
     	if(service == null) throw new Exception();
     	String pageToken = null;
@@ -95,6 +101,9 @@ public class GoogleAPI {
     	return null;
     }
     
+    //Retourne le contenu d'un Google Doc sous la forme d'un String
+    //Utilisation de l'InputStream peut être un peu astucieuse
+    //Il vaut peut être mieux utiliser l'API Google Docs
     public String getGdoc(String id) throws Exception {
         if(service == null) throw new Exception();
         InputStream inputStream = service.files().export(id, "text/plain")

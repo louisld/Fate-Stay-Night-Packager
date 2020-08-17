@@ -16,19 +16,22 @@ import javax.swing.JTextField;
 
 public class Main extends JFrame {
 	
-	//Parameters
+	//Paramètres
     private String outputFolder = "package";
     
-    //JFrame Components
+    //Composants graphiques
     private JButton connectionButton;
     private JButton generateButton;
     private JTextField outputFolderTextField;
     private JTextArea textOutput;
     private JProgressBar progressBar;
     
+    //Gestion de l'API Google Drive
     private GoogleAPI googleAPI = null;
     
     public Main() {
+    	
+    	//Configuration des diverses éléments graphique
     	connectionButton = new JButton("Connexion");
     	generateButton = new JButton("Go !");
     	generateButton.setEnabled(false);
@@ -43,6 +46,7 @@ public class Main extends JFrame {
     	progressBar.setMinimum(0);
     	progressBar.setStringPainted(true);
     	
+    	//Listener sur le premier bouton qui permet d'initialiser le service de l'API Google
     	connectionButton.addActionListener(e -> {
 			try {
 				googleAPI = new GoogleAPI();
@@ -55,6 +59,8 @@ public class Main extends JFrame {
 			}
 		});
     	
+    	//Listener sur le deuxième bouton qui lance un second thread
+    	//Ce thread se charge de télécharger tous les fichiers de script
     	generateButton.addActionListener(e -> {
     		generateButton.setEnabled(false);
     		FetchingThread ft = new FetchingThread(googleAPI, progressBar, generateButton);
@@ -63,6 +69,7 @@ public class Main extends JFrame {
     		t.start();
     	});
     	
+    	//Mise en page de la fenêtre
     	this.setTitle("Fate/Stay Night Packager");
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	this.setSize(600, 400);
@@ -83,7 +90,6 @@ public class Main extends JFrame {
     	this.setLocationRelativeTo(null);
     	this.setVisible(true);
     }
-
 
 	public static void main(String[] args) {
 		Main main = new Main();
