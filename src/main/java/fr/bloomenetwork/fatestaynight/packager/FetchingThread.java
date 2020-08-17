@@ -102,7 +102,7 @@ public class FetchingThread implements Runnable {
 					}
 					filename += "ルート";
 					filename += Utils.numberToJapaneseString(Integer.parseInt(scriptInfos.get(1))) + "日目";
-					filename += "-" + scriptInfos.get(2) + ".ks";
+					filename += "-" + String.format("%02d", Integer.parseInt(scriptInfos.get(2))) + ".ks";
 					
 					java.nio.file.Files.write(Paths.get(outputFolder + "/" + filename), content.getBytes(StandardCharsets.UTF_8));
 					System.out.println("\tFichier " + filename +" écrit.");
