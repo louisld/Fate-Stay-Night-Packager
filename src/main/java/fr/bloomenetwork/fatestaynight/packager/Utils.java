@@ -13,6 +13,8 @@ public class Utils {
 
 		if(strNumber.charAt(0) == '0')
 			dix = "";
+		if(strNumber.charAt(0) == '1')
+			strNumber = "0" + strNumber.charAt(1);
 
 		return numbers[Integer.parseInt(String.valueOf(strNumber.charAt(0)))] + dix + numbers[Integer.parseInt(String.valueOf(strNumber.charAt(1)))];
 	}
