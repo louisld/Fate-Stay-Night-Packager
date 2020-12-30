@@ -1,9 +1,9 @@
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'eclipse'
-
-compileJava.options.encoding = "UTF-8"
-compileTestJava.options.encoding = "UTF-8"
+plugins {
+  id 'java'
+  id 'eclipse'
+  id 'application'
+  id "com.github.johnrengelman.shadow" version "6.1.0"
+}
 
 repositories {
     mavenCentral()
@@ -13,26 +13,21 @@ dependencies {
     compile 'com.google.api-client:google-api-client:1.23.0'
     compile 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
     compile 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
     compile group: 'commons-io', name: 'commons-io', version: '2.7'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-}
-
-compileJava {
-    sourceCompatibility = 1.8
+	
+	sourceCompatibility = 1.8
     targetCompatibility = 1.8
 }
 
-version = '0.3'
+version = '0.5'
 mainClassName = 'fr.bloomenetwork.fatestaynight.packager.Main'
 
-task fatJar(type: Jar) {
-	manifest {
-        attributes 'Implementation-Title': 'Fate Stay Night Packager',
-        	'Implementation-Version': version,
-        	'Main-Class': mainClassName
-    }
-    baseName = project.name + '-all'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }

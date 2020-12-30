@@ -1,6 +1,7 @@
 package fr.bloomenetwork.fatestaynight.packager;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -114,6 +115,19 @@ public class GoogleAPI {
         inputStream.read();
         
         return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+    }
+    
+    public void downloadDocx(String id, String filename) throws Exception {
+    	if(service == null) throw new Exception();
+    	InputStream inputStream = service.files().export(id, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                .executeMediaAsInputStream();
+    	Utils.writeInputStreamToFile(inputStream, new java.io.File(filename+".docx"));
+    }
+    
+    public InputStream getDocx(String id) throws Exception {
+    	if(service == null) throw new Exception();
+    	return service.files().export(id, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                .executeMediaAsInputStream();
     }
 
 }
