@@ -53,9 +53,9 @@ public class Main extends JFrame {
 				connectionButton.setEnabled(false);
 				connectionButton.setText("Connecté");
 				generateButton.setEnabled(true);
-				textOutput.append("Connecté à l'API Google Drive.\n");
+				Utils.print("Connecté à l'API Google Drive.\n");
 			} catch (GeneralSecurityException | IOException e1) {
-				System.out.println(e1.toString());
+				Utils.print(e1.toString(), Utils.ERROR);
 			}
 		});
     	

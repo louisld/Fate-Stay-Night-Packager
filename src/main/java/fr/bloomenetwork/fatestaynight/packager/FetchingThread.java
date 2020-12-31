@@ -47,7 +47,7 @@ public class FetchingThread implements Runnable {
 		try {
 			rootFolder = googleAPI.getFolderIdByName("Fate Stay Night");
 		} catch (Exception e1) {
-			System.out.println(e1.toString());
+			Utils.print(e1.toString(), Utils.ERROR);
 		}
 		
 		if(rootFolder != null) {
@@ -56,7 +56,7 @@ public class FetchingThread implements Runnable {
 			try {
 				routeFolders = googleAPI.getSubFiles(rootFolder, " and mimeType = 'application/vnd.google-apps.folder'");
 			} catch (IOException e1) {
-				System.out.println(e1.toString());
+				Utils.print(e1.toString(), Utils.ERROR);
 			}
 			
 			//On récupère ensuite tous les Google Docs qui se trouve dans les sous-dossiers,
@@ -70,7 +70,7 @@ public class FetchingThread implements Runnable {
 						listGdocs.addAll(googleAPI.getSubFiles(dayFolder.getId(), " and mimeType = 'application/vnd.google-apps.document'"));
 					}
 				} catch (IOException e1) {
-					System.out.println(e1.toString());
+					Utils.print(e1.toString(), Utils.ERROR);
 				}
 			}
 			
@@ -136,14 +136,14 @@ public class FetchingThread implements Runnable {
 					Utils.print("\tFichier " + filename +" écrit.");
 					
 				} catch (IOException e1) {
-					System.out.println("Erreur lors de l'écriture.");
+					Utils.print("Erreur lors de l'écriture.", Utils.ERROR);
 				} catch (Exception e1) {
-					System.out.println("Fichier invalide.");
+					Utils.print("Fichier invalide.", Utils.ERROR);
 				}
 			}
 			Utils.print("Fini !");
 		} else {
-			System.out.println("Le répertoire de base n'a pas été trouvé.");
+			Utils.print("Le répertoire de base n'a pas été trouvé.", Utils.ERROR);
 		}
 		generateButton.setEnabled(true);
 	}
