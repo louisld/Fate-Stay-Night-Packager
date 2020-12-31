@@ -1,6 +1,15 @@
 package fr.bloomenetwork.fatestaynight.packager;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.JTextArea;
 
@@ -12,12 +21,21 @@ public class PrintStreamCapturer extends PrintStream {
     private JTextArea text;
     private boolean atLineStart;
     private String indent;
+    private static final String LOG_PATH = "./logs/";
+    private Path logFile;
 
     public PrintStreamCapturer(JTextArea textArea, PrintStream capturedStream, String indent) {
         super(capturedStream);
         this.text = textArea;
         this.indent = indent;
         this.atLineStart = true;
+        new File(LOG_PATH).mkdirs();
+        this.logFile = Paths.get(LOG_PATH + "FSN Packager - " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH-mm-ss")) + ".log");
+        try {
+			Files.createFile(logFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     public PrintStreamCapturer(JTextArea textArea, PrintStream capturedStream) {
@@ -31,6 +49,11 @@ public class PrintStreamCapturer extends PrintStream {
                 text.append(str);
             }
         }
+        try {
+			Files.write(logFile, str.getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     private void write(String str) {

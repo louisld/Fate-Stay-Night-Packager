@@ -93,7 +93,7 @@ public class GoogleAPI {
 		      .setPageToken(pageToken)
 		      .execute();
 		  for (File file : result.getFiles()) {
-		    System.out.println("Répertoire " + name + " trouvé.\n");
+		    Utils.print("Répertoire " + name + " trouvé.\n");
 		    return file.getId();
 		  }
 		  pageToken = result.getNextPageToken();
