@@ -2,8 +2,6 @@ package fr.bloomenetwork.fatestaynight.packager;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,9 +9,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JProgressBar;
-
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import com.google.api.services.drive.model.File;
 
@@ -80,7 +75,7 @@ public class FetchingThread implements Runnable {
 			}
 			
 			progressBar.setMaximum(listGdocs.size());
-			System.out.println("Nombre de fichiers à télécharger : " + listGdocs.size() + ".");
+			Utils.print("Nombre de fichiers à télécharger : " + listGdocs.size() + ".");
 			
 			int i = 0;
 			
@@ -92,8 +87,8 @@ public class FetchingThread implements Runnable {
 				try {
 					//On récupère le contenu du fichier
 					String content = googleAPI.getGdoc(file.getId());
-					System.out.println("Évaluation du fichier " + file.getName());
-					System.out.println("\tId : " + file.getId());
+					Utils.print("Évaluation du fichier " + file.getName());
+					Utils.print("\tId : " + file.getId());
 					
 					//On vérifie que c'est bien un fichier de script
 					//et on en extrait les informations grâce à une regex
@@ -134,15 +129,11 @@ public class FetchingThread implements Runnable {
 					filename += "-" + String.format("%02d", Integer.parseInt(scriptInfos.get(2))) + ".ks";
 					
 					//On écrit le docx
-					System.out.println("\tTéléchargement du fichier docx.");
-					//Puis on le convertit en txt
-					System.out.println("\tExtraction du texte...");
+					Utils.print("\tTéléchargement du fichier docx et conversion.");
 					InputStream docxStream = googleAPI.getDocx(file.getId());
-					XWPFWordExtractor wordExtractor = new XWPFWordExtractor(new XWPFDocument(docxStream));
-					String docxText = wordExtractor.getText();
-					//Finalement, on écrit le fichier
-					java.nio.file.Files.write(Paths.get(outputFolder + "/" + filename), docxText.getBytes(StandardCharsets.UTF_8));
-					System.out.println("\tFichier " + filename +" écrit.");
+					//On convertit et enfin on écrit le fichier
+					Utils.docxToKsFile(docxStream, outputFolder + "/" + filename);
+					Utils.print("\tFichier " + filename +" écrit.");
 					
 				} catch (IOException e1) {
 					System.out.println("Erreur lors de l'écriture.");
@@ -150,7 +141,7 @@ public class FetchingThread implements Runnable {
 					System.out.println("Fichier invalide.");
 				}
 			}
-			System.out.println("Fini !");
+			Utils.print("Fini !");
 		} else {
 			System.out.println("Le répertoire de base n'a pas été trouvé.");
 		}
