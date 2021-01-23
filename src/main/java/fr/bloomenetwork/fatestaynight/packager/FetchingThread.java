@@ -2,6 +2,7 @@ package fr.bloomenetwork.fatestaynight.packager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,7 +18,7 @@ public class FetchingThread implements Runnable {
 	private GoogleAPI googleAPI;
     private static Pattern pattern;
     private static Matcher matcher;
-    
+
     //Listes du nom des routes pour le nom des fichiers
     private static final String[] routes = {"セイバー", "凛", "桜"};
     
@@ -129,6 +130,15 @@ public class FetchingThread implements Runnable {
 						epilogueInfos.add(matcher.group(1));
 						epilogueInfos.add(matcher.group(2));
 					}
+					//On vérifie si c'est un fichier .fcf
+					pattern = Pattern.compile(".+.fcf");
+					matcher = pattern.matcher(file.getName());
+					ArrayList<String> fcfInfos = new ArrayList<>();
+					boolean isFcfFile = false;
+					while(matcher.find()){
+						isFcfFile = true;
+						fcfInfos.add(file.getName());
+					}
 
 					if(isScriptFile){
 						//Génération du nom du fichier
@@ -173,6 +183,10 @@ public class FetchingThread implements Runnable {
 						filename += "エピローグ";
 						filename += epilogueInfos.get(1);
 						filename += ".ks";
+					} else if(isFcfFile) {
+						filename = fcfInfos.get(0);
+					} else {
+						Utils.print("Fichier non supporté");
 					}
 
 					if(!filename.equals("")) {
