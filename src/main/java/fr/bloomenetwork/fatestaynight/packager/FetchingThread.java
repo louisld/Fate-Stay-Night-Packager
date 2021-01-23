@@ -58,11 +58,11 @@ public class FetchingThread implements Runnable {
 			} catch (IOException e1) {
 				Utils.print(e1.toString(), Utils.ERROR);
 			}
-			
+
 			//On récupère ensuite tous les Google Docs qui se trouve dans les sous-dossiers,
 			//ceux correspondants aux jours, des dossiers des routes.
 			ArrayList<File> listGdocs = new ArrayList<File>();
-			
+
 			for(File routeFolder : routeFolders) {
 				try {
 					List<File> dayFolders = googleAPI.getSubFiles(routeFolder.getId(), " and mimeType = 'application/vnd.google-apps.folder'");
@@ -73,6 +73,7 @@ public class FetchingThread implements Runnable {
 					Utils.print(e1.toString(), Utils.ERROR);
 				}
 			}
+
 			
 			progressBar.setMaximum(listGdocs.size());
 			Utils.print("Nombre de fichiers à télécharger : " + listGdocs.size() + ".");
@@ -89,6 +90,8 @@ public class FetchingThread implements Runnable {
 					String content = googleAPI.getGdoc(file.getId());
 					Utils.print("Évaluation du fichier " + file.getName());
 					Utils.print("\tId : " + file.getId());
+
+					String filename = "";
 					
 					//On vérifie que c'est bien un fichier de script
 					//et on en extrait les informations grâce à une regex
@@ -98,42 +101,88 @@ public class FetchingThread implements Runnable {
 					//Un peu fragile ici
 					//La boucle n'est censé faire qu'un tour
 					//Il ne faut pas qu'il y ait de conflit dans la regex
+					boolean isScriptFile = false;
 					ArrayList<String> scriptInfos = new ArrayList<String>();
 					while(matcher.find()) {
+						isScriptFile = true;
 						scriptInfos.add(matcher.group(1));
 						scriptInfos.add(matcher.group(2));
 						scriptInfos.add(matcher.group(3));
 					}
-					
-					//Génération du nom du fichier
-					String filename = "";
-					//D'abord le nom de la route
-					switch(scriptInfos.get(0)) {
-						case "saber":
-							filename += routes[0];
-							break;
-						case "rin":
-							filename += routes[1];
-							break;
-						case "sakura":
-							filename += routes[2];
-							break;
-						default:
-							break;
+
+					//On vérifie que c'est un fichier du prologue
+					pattern = Pattern.compile("@resetvoice route=prologue day=(\\d+)");
+					matcher = pattern.matcher(content);
+					ArrayList<String> prologueInfos = new ArrayList<>();
+					boolean isPrologueFile = false;
+					while(matcher.find()){
+						isPrologueFile = true;
+						prologueInfos.add(matcher.group(1));
 					}
-					//Le mot route
-					filename += "ルート";
-					//Le jour
-					filename += Utils.numberToJapaneseString(Integer.parseInt(scriptInfos.get(1))) + "日目";
-					//Et enfin la scène et l'extension .ks
-					filename += "-" + String.format("%02d", Integer.parseInt(scriptInfos.get(2))) + ".ks";
-					
-					//On écrit le docx
-					Utils.print("\tTéléchargement du fichier docx et conversion.");
-					InputStream docxStream = googleAPI.getDocx(file.getId());
-					//On convertit et enfin on écrit le fichier
-					Utils.docxToKsFile(docxStream, outputFolder + "/" + filename);
-					Utils.print("\tFichier " + filename +" écrit.");
+					//On vérifie que c'est un fichier épilogue
+					pattern = Pattern.compile("@resetvoice route=(\\w+)ep(\\d?)");
+					matcher = pattern.matcher(content);
+					ArrayList<String> epilogueInfos = new ArrayList<>();
+					boolean isEpilogueFile = false;
+					while(matcher.find()){
+						isEpilogueFile = true;
+						epilogueInfos.add(matcher.group(1));
+						epilogueInfos.add(matcher.group(2));
+					}
+
+					if(isScriptFile){
+						//Génération du nom du fichier
+						//D'abord le nom de la route
+						switch(scriptInfos.get(0)) {
+							case "saber":
+								filename += routes[0];
+								break;
+							case "rin":
+								filename += routes[1];
+								break;
+							case "sakura":
+								filename += routes[2];
+								break;
+							default:
+								break;
+						}
+						//Le mot route
+						filename += "ルート";
+						//Le jour
+						filename += Utils.numberToJapaneseString(Integer.parseInt(scriptInfos.get(1))) + "日目";
+						//Et enfin la scène et l'extension .ks
+						filename += "-" + String.format("%02d", Integer.parseInt(scriptInfos.get(2))) + ".ks";
+					} else if(isPrologueFile){
+						filename += "プロローグ";
+						filename +=  prologueInfos.get(0);
+						filename += "日目.ks";
+					} else if(isEpilogueFile) {
+						switch(epilogueInfos.get(0)) {
+							case "saber":
+								filename += routes[0];
+								break;
+							case "rin":
+								filename += routes[1];
+								break;
+							case "sakura":
+								filename += routes[2];
+								break;
+							default:
+								break;
+						}
+						filename += "エピローグ";
+						filename += epilogueInfos.get(1);
+						filename += ".ks";
+					}
+
+					if(filename != "") {
+						//On écrit le docx
+						Utils.print("\tTéléchargement du fichier docx et conversion.");
+						InputStream docxStream = googleAPI.getDocx(file.getId());
+						//On convertit et enfin on écrit le fichier
+						Utils.docxToKsFile(docxStream, outputFolder + "/" + filename);
+						Utils.print("\tFichier " + filename +" écrit.");
+					}
 					
 				} catch (IOException e1) {
 					Utils.print("Erreur lors de l'écriture.", Utils.ERROR);

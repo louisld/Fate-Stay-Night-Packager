@@ -31,11 +31,13 @@ public class PrintStreamCapturer extends PrintStream {
         this.atLineStart = true;
         new File(LOG_PATH).mkdirs();
         this.logFile = Paths.get(LOG_PATH + "FSN Packager - " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH-mm-ss")) + ".log");
-        try {
-			Files.createFile(logFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        if(!Files.exists(logFile)){
+            try {
+                Files.createFile(logFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public PrintStreamCapturer(JTextArea textArea, PrintStream capturedStream) {

@@ -109,11 +109,9 @@ public class GoogleAPI {
         if(service == null) throw new Exception();
         InputStream inputStream = service.files().export(id, "text/plain")
             .executeMediaAsInputStream();
-        
-        inputStream.read();
-        inputStream.read();
-        inputStream.read();
-        
+
+        for (int i = 0; i < 3; i++) inputStream.read();
+
         return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
     }
     

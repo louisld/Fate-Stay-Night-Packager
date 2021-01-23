@@ -10,11 +10,11 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.api-client:google-api-client:1.23.0'
-    compile 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-    compile 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
-    compile group: 'commons-io', name: 'commons-io', version: '2.7'
-    compile group: 'org.unix4j', name: 'unix4j-command', version: '0.5'
+    implementation 'com.google.api-client:google-api-client:1.23.0'
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    implementation 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.7'
+    implementation group: 'org.unix4j', name: 'unix4j-command', version: '0.5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 	
