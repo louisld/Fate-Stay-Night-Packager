@@ -61,7 +61,7 @@ public class FetchingThread implements Runnable {
 
 			//On récupère ensuite tous les Google Docs qui se trouve dans les sous-dossiers,
 			//ceux correspondants aux jours, des dossiers des routes.
-			ArrayList<File> listGdocs = new ArrayList<File>();
+			ArrayList<File> listGdocs = new ArrayList<>();
 
 			for(File routeFolder : routeFolders) {
 				try {
@@ -102,7 +102,7 @@ public class FetchingThread implements Runnable {
 					//La boucle n'est censé faire qu'un tour
 					//Il ne faut pas qu'il y ait de conflit dans la regex
 					boolean isScriptFile = false;
-					ArrayList<String> scriptInfos = new ArrayList<String>();
+					ArrayList<String> scriptInfos = new ArrayList<>();
 					while(matcher.find()) {
 						isScriptFile = true;
 						scriptInfos.add(matcher.group(1));
@@ -175,7 +175,7 @@ public class FetchingThread implements Runnable {
 						filename += ".ks";
 					}
 
-					if(filename != "") {
+					if(!filename.equals("")) {
 						//On écrit le docx
 						Utils.print("\tTéléchargement du fichier docx et conversion.");
 						InputStream docxStream = googleAPI.getDocx(file.getId());
