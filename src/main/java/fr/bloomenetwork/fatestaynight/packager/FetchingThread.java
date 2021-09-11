@@ -63,7 +63,7 @@ public class FetchingThread implements Runnable {
 			//On récupère ensuite tous les Google Docs qui se trouvent dans les sous-dossiers,
 			//ceux correspondants aux jours, des dossiers des routes.
 			ArrayList<File> listGdocs = new ArrayList<>();
-			
+
 			for(File routeFolder : routeFolders) {
 				try {
 					List<File> dayFolders = googleAPI.getSubFiles(routeFolder.getId(), " and mimeType = 'application/vnd.google-apps.folder'");
