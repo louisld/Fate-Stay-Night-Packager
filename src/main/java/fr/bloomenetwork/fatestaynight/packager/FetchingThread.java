@@ -52,7 +52,7 @@ public class FetchingThread implements Runnable {
 		}
 		
 		if(rootFolder != null) {
-			//On récupère les sous-dossiers, qui correspondent aux différents routes
+			//On récupère les sous-dossiers, qui correspondent aux différentes routes
 			List<File> routeFolders = null;
 			try {
 				routeFolders = googleAPI.getSubFiles(rootFolder, " and mimeType = 'application/vnd.google-apps.folder'");
@@ -60,10 +60,10 @@ public class FetchingThread implements Runnable {
 				Utils.print(e1.toString(), Utils.ERROR);
 			}
 
-			//On récupère ensuite tous les Google Docs qui se trouve dans les sous-dossiers,
+			//On récupère ensuite tous les Google Docs qui se trouvent dans les sous-dossiers,
 			//ceux correspondants aux jours, des dossiers des routes.
 			ArrayList<File> listGdocs = new ArrayList<>();
-
+			
 			for(File routeFolder : routeFolders) {
 				try {
 					List<File> dayFolders = googleAPI.getSubFiles(routeFolder.getId(), " and mimeType = 'application/vnd.google-apps.folder'");
@@ -100,7 +100,7 @@ public class FetchingThread implements Runnable {
 					matcher = pattern.matcher(content);
 					
 					//Un peu fragile ici
-					//La boucle n'est censé faire qu'un tour
+					//La boucle n'est censée faire qu'un tour
 					//Il ne faut pas qu'il y ait de conflit dans la regex
 					boolean isScriptFile = false;
 					ArrayList<String> scriptInfos = new ArrayList<>();
@@ -138,6 +138,15 @@ public class FetchingThread implements Runnable {
 					while(matcher.find()){
 						isFcfFile = true;
 						fcfInfos.add(file.getName());
+					}
+					//On vérifie si c'est un fichier .dic
+					pattern = Pattern.compile(".+.dic");
+					matcher = pattern.matcher(file.getName());
+					ArrayList<String> dicInfos = new ArrayList<>();
+					boolean isDicFile = false;
+					while(matcher.find()){
+						isDicFile = true;
+						dicInfos.add(file.getName());
 					}
 
 					if(isScriptFile){
@@ -185,6 +194,8 @@ public class FetchingThread implements Runnable {
 						filename += ".ks";
 					} else if(isFcfFile) {
 						filename = fcfInfos.get(0);
+					} else if(isDicFile) {
+						filename = dicInfos.get(0);
 					} else {
 						Utils.print("Fichier non supporté");
 					}
