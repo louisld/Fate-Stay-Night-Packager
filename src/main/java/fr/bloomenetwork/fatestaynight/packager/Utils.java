@@ -92,6 +92,8 @@ public class Utils {
 		txtContent = txtContent.replaceAll("&amp;", "&");
 		txtContent = txtContent.replaceAll("&quot;", "\"");
 		txtContent = txtContent.replaceAll("&lt;", "<");
+		txtContent = txtContent.replaceAll("&gt;", ">");
+		txtContent = txtContent.replaceFirst("\r", "");
 		java.nio.file.Files.write(Paths.get(filename), txtContent.getBytes(StandardCharsets.UTF_8));
 	}
 }
