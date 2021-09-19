@@ -93,7 +93,11 @@ public class Utils {
 		txtContent = txtContent.replaceAll("&quot;", "\"");
 		txtContent = txtContent.replaceAll("&lt;", "<");
 		txtContent = txtContent.replaceAll("&gt;", ">");
+		// Supprime la première ligne vide de tous les fichiers :
 		txtContent = txtContent.replaceFirst("\r", "");
+		// Remplace l'espace avant la ponctuation par une espace insécable :
+		txtContent = txtContent.replaceAll("« ", "«\u00A0");
+		txtContent = txtContent.replaceAll(" »", "\u00A0»");
 		java.nio.file.Files.write(Paths.get(filename), txtContent.getBytes(StandardCharsets.UTF_8));
 	}
 }
